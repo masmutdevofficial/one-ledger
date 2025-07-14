@@ -1,32 +1,53 @@
 <template>
   <div class="min-h-screen flex justify-center bg-black text-gray-900">
-    <!-- Content Wrapper -->
     <div class="w-full max-w-md bg-white min-h-screen flex flex-col">
-      <!-- Navbar -->
-      <header class="flex items-center justify-between p-4 shadow">
+      <!-- Header -->
+      <header
+        class="bg-white w-full max-w-4xl shadow-sm flex items-center px-6 py-4 space-x-8"
+      >
         <!-- Logo -->
-        <div class="flex items-center space-x-2">
-          <div class="w-6 h-6 bg-teal-500 rounded"></div>
-        </div>
+        <img
+          alt="Logo with four hexagons"
+          class="w-8 h-9"
+          src="/img/logo.png"
+        />
+
+        <!-- Search Form -->
+        <form class="flex-1">
+          <div class="relative w-full max-w-lg mx-a2uto">
+            <input
+              class="w-full border-2 border-black rounded-full py-2 pl-6 pr-10 text-black text-base focus:outline-none"
+              placeholder="Search"
+              type="search"
+            />
+            <button
+              aria-label="Search"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-black text-lg"
+              type="submit"
+            >
+              <Icon name="fa:search" />
+            </button>
+          </div>
+        </form>
 
         <!-- Top Icons -->
-        <div class="flex items-center space-x-4 text-lg">
-          <Icon name="fa:search" />
-          <Icon name="fa:bell" />
-          <Icon name="fa:headphones" />
-          <Icon name="fa:question-circle" />
-        </div>
+        <nav class="flex space-x-3 text-black text-xl">
+          <button aria-label="Notifications" class="focus:outline-none">
+            <Icon name="tabler:bell" size="24" />
+          </button>
+          <button aria-label="Support" class="focus:outline-none">
+            <Icon name="fa6-solid:headset" />
+          </button>
+          <button aria-label="Help" class="focus:outline-none">
+            <Icon name="tabler:info-circle" size="24" />
+          </button>
+        </nav>
       </header>
 
       <!-- Main Content -->
       <main class="flex-1 overflow-y-auto">
         <slot />
       </main>
-
-      <!-- Optional Footer -->
-      <footer class="text-xs text-center text-gray-400 py-2 border-t">
-        © 2025 OneLedger
-      </footer>
     </div>
   </div>
 </template>
