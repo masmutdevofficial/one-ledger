@@ -14,9 +14,9 @@
 
         <!-- Search Form -->
         <form class="flex-1">
-          <div class="relative w-full max-w-lg mx-a2uto">
+          <div class="relative w-full max-w-lg mx-auto">
             <input
-              class="w-full border-2 border-black rounded-full py-2 pl-6 pr-10 text-black text-base focus:outline-none"
+              class="w-full border-[1px] border-black rounded-full py-2 pl-6 pr-10 text-black text-base focus:outline-none"
               placeholder="Search"
               type="search"
             />
@@ -31,7 +31,7 @@
         </form>
 
         <!-- Top Icons -->
-        <nav class="flex space-x-3 text-black text-xl">
+        <nav class="flex space-x-5 text-black text-xl">
           <button aria-label="Notifications" class="focus:outline-none">
             <Icon name="tabler:bell" size="24" />
           </button>

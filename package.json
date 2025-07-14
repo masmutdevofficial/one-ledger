@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@iconify-json/fa": "^1.2.1",
+    "@iconify-json/fa-brands": "^1.2.1",
     "@iconify-json/tabler": "^1.2.19"
   }
 }
