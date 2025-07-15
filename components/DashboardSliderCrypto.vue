@@ -47,11 +47,13 @@
                 }}</span>
                 <p class="text-gray-400 text-xs">Past 1 year(s) to date</p>
               </div>
-              <SplineAreaChart
-                class="relative"
-                :series="item.chart"
-                :categories="item.labels"
-              />
+              <ClientOnly>
+                <SplineAreaChart
+                  class="relative"
+                  :series="item.chart"
+                  :categories="item.labels"
+                />
+              </ClientOnly>
             </div>
           </div>
         </div>
