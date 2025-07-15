@@ -3,7 +3,7 @@
     <div class="w-full max-w-md bg-white min-h-screen flex flex-col">
       <!-- Header -->
       <header
-        class="bg-white w-full max-w-4xl shadow-sm flex items-center px-6 py-4 space-x-8"
+        class="bg-[#f0f7fc] w-full max-w-4xl shadow-sm flex items-center px-6 py-4 space-x-8"
       >
         <!-- Logo -->
         <img
