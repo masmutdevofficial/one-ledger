@@ -70,12 +70,12 @@ import DashboardSliderCrypto from "~/components/DashboardSliderCrypto.vue";
       </div>
 
       <!-- CTA Button -->
-      <button
-        class="w-full bg-black text-white font-semibold text-base rounded-full py-3 mb-4"
-        type="button"
+      <NuxtLink
+        to="/login"
+        class="block w-full bg-black text-white font-semibold text-base rounded-full py-3 mb-4 text-center"
       >
         Sign Up / Log In
-      </button>
+      </NuxtLink>
 
       <DashboardSliderCrypto />
     </div>

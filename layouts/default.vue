@@ -6,11 +6,13 @@
         class="bg-[#f0f7fc] w-full max-w-4xl shadow-sm flex items-center px-6 py-4 space-x-8"
       >
         <!-- Logo -->
-        <img
-          alt="Logo with four hexagons"
-          class="w-8 h-9"
-          src="/img/logo.png"
-        />
+        <NuxtLink to="/dashboard" aria-label="Dashboard">
+          <img
+            alt="Logo with four hexagons"
+            class="w-8 h-9"
+            src="/img/logo.png"
+          />
+        </NuxtLink>
 
         <!-- Search Form -->
         <form class="flex-1">
@@ -32,9 +34,13 @@
 
         <!-- Top Icons -->
         <nav class="flex space-x-5 text-black text-xl">
-          <button aria-label="Notifications" class="focus:outline-none">
+          <NuxtLink
+            to="/notification"
+            aria-label="Notifications"
+            class="focus:outline-none"
+          >
             <Icon name="tabler:bell" size="24" />
-          </button>
+          </NuxtLink>
           <button aria-label="Support" class="focus:outline-none">
             <Icon name="fa6-solid:headset" />
           </button>

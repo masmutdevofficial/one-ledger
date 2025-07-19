@@ -41,21 +41,7 @@ import { ref, computed } from "vue";
 const searchQuery = ref("");
 const selectedLanguage = ref("English");
 
-const languages = [
-  "Bahasa Indonesia",
-  "English",
-  "አማርኛ",
-  "العربية",
-  "Azərbayccan",
-  "български",
-  "বাংলা",
-  "Čeština",
-  "Dansk",
-  "Deutsch (Schweiz)",
-  "Ελληνικά",
-  "English (Africa)",
-  "English (India)",
-];
+const languages = ["Bahasa Indonesia", "English"];
 
 const filteredLanguages = computed(() => {
   if (!searchQuery.value) return languages;
