@@ -54,11 +54,22 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
-const showPassword = ref(false);
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useModalStore } from "~/stores/modal-alert";
 
 definePageMeta({
   layout: false, // halaman ini tanpa layout global
 });
+
+const route = useRoute();
+const modal = useModalStore();
+
+onMounted(() => {
+  if (route.query.reason === "unauthorized") {
+    modal.open("You must be logged in to access this page.");
+  }
+});
+
+const showPassword = ref(false);
 </script>
