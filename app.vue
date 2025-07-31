@@ -1,10 +1,10 @@
 <template>
   <NuxtLayout>
     <NuxtPage />
-    <GlobalModal />
+    <ApiAlerts />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import GlobalModal from "@/components/GlobalModal.vue";
+import ApiAlerts from "@/components/ApiAlerts.vue";
 </script>
