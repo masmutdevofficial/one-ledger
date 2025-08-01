@@ -76,16 +76,10 @@ const identity = ref<string>("");
 const password = ref<string>("");
 const loading = ref(false);
 
-interface LoginResponse {
-  status: string;
-  message: string;
-  token?: string;
-}
-
-const login = async () => {
+async function login() {
   loading.value = true;
   try {
-    const res = await fetch("https://ledger.masmutdev.id/api/login", {
+    const res = await fetch("http://localhost:8000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -97,45 +91,46 @@ const login = async () => {
       }),
     });
 
-    const data = (await res.json()) as LoginResponse;
+    const data = await res.json();
 
     if (!res.ok) {
-      // Cek OTP verification
-      if (data.message === "OTP Verification Required.") {
-        modal.open("Failed", data.message);
+      // Cek jika error karena belum verifikasi OTP
+      if (data.otp_sent && data.id) {
+        // Simpan user id ke localStorage sebagai idReg
+        localStorage.setItem("idReg", String(data.id));
+
+        modal.open(
+          "Verification Required",
+          data.message || "Please verify OTP."
+        );
         setTimeout(() => {
-          modal.close();
           router.push("/verification");
-        }, 2000);
+        }, 3000);
         loading.value = false;
         return;
       }
 
-      // Error dari server (login gagal dsb)
-      modal.open("Failed", data.message || "Login failed.");
+      // Error lain, tampilkan biasa
+      modal.open("Login Failed", data.message || "Login failed.");
       loading.value = false;
       return;
     }
 
-    // Status success, token ada
-    if (data.status === "success" && data.token) {
-      modal.open("Success", data.message || "Login successful.");
-      localStorage.setItem("token", data.token);
+    // Simpan token ke localStorage (atau ke Pinia/State lain)
+    localStorage.setItem("token", data.token);
 
-      setTimeout(() => {
-        modal.close();
-        router.push("/dashboard");
-      }, 1000);
-    } else {
-      modal.open("Failed", data.message || "Login failed.");
+    // Redirect ke dashboard/home
+    router.push("/dashboard");
+  } catch (error: unknown) {
+    let msg = "Gagal terhubung ke server.";
+    if (error instanceof Error) {
+      msg += " " + error.message;
+    } else if (typeof error === "string") {
+      msg += " " + error;
     }
-  } catch (e) {
-    modal.open(
-      "Failed",
-      e instanceof Error ? e.message : "Network error. Please try again."
-    );
+    modal.open("Error", msg);
   } finally {
     loading.value = false;
   }
-};
+}
 </script>

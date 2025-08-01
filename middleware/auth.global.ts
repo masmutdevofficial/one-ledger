@@ -1,5 +1,11 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const publicPages = ["/", "/login", "/register", "/verification"];
+  const publicPages = [
+    "/",
+    "/login",
+    "/register",
+    "/verification",
+    "/forgot-password",
+  ];
 
   if (import.meta.client) {
     const token = localStorage.getItem("token");

@@ -3,7 +3,13 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 // Halaman publik
-const publicPages = ["/", "/login", "/register", "/verification"];
+const publicPages = [
+  "/",
+  "/login",
+  "/register",
+  "/verification",
+  "/forgot-password",
+];
 const isPublicPage = computed(() => publicPages.includes(route.path));
 
 const isLoading = ref(true);

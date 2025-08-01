@@ -18,12 +18,11 @@
         <!-- Email Verification Code -->
         <div class="relative mb-3">
           <input
-            v-model="emailCode"
-            :disabled="loading"
             type="text"
             placeholder="Email Verification Code"
             class="w-full border border-gray-300 rounded-md py-2 px-3 pr-20 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
+
           <!-- Countdown or Resend -->
           <span
             v-if="timer > 0"
@@ -47,14 +46,12 @@
 
         <!-- Submit -->
         <button
-          type="button"
-          :disabled="loading"
+          type="submit"
           class="mt-4 w-full bg-gray-800 text-white font-semibold text-sm rounded-full py-2 hover:bg-gray-700"
-          @click="submitCode"
         >
-          <span v-if="loading">Checking...</span>
-          <span v-else>Submit</span>
+          Submit
         </button>
+
         <h5
           class="text-sm text-center font-semibold text-black mb-4 underline mt-6"
         >
@@ -67,16 +64,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useRouter } from "vue-router";
-import { useApiAlertStore } from "~/stores/api-alert";
-const modal = useApiAlertStore();
 
 const timer = ref(60);
 let interval = null;
-
-const emailCode = ref("");
-const loading = ref(false);
-const userId = ref(null);
 
 const formattedTime = computed(() => {
   const min = String(Math.floor(timer.value / 60)).padStart(2, "0");
@@ -97,70 +87,15 @@ function startTimer() {
 }
 
 function resendCode() {
-  startTimer(); // hanya reset timer
-}
-
-const router = useRouter();
-
-async function submitCode() {
-  if (!userId.value) {
-    modal.open("Error", "User ID not found.");
-    return;
-  }
-  if (!emailCode.value) {
-    modal.open("Error", "Verification code is required.");
-    return;
-  }
-  loading.value = true;
-  try {
-    const res = await fetch("http://localhost:8000/api/verify-otp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ id: userId.value, otp: emailCode.value }),
-    });
-    const data = await res.json();
-
-    if (data.status !== "success") {
-      modal.open("Verification Failed", data.message || "OTP is invalid.");
-      loading.value = false;
-      return;
-    }
-
-    modal.open("Success", "Verification successful!");
-    setTimeout(() => {
-      localStorage.removeItem("idReg");
-      router.push("/login");
-    }, 1500);
-  } catch (error) {
-    let msg = "Failed to connect to server.";
-    if (error instanceof Error) msg += " " + error.message;
-    else if (typeof error === "string") msg += " " + error;
-    modal.open("Error", msg);
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(() => {
-  // Ambil user id dari localStorage
-  const idStr = localStorage.getItem("idReg");
-  if (!idStr) {
-    router.replace("/login");
-    return;
-  }
-  const id = Number(idStr);
-  if (isNaN(id) || id <= 0) {
-    router.replace("/login");
-    return;
-  }
-  userId.value = id;
+  // Kirim ulang kode verifikasi lewat API kalau perlu
+  // contoh: await $fetch('/api/resend-code', { method: 'POST' })
 
   startTimer();
-});
+}
 
+onMounted(startTimer);
 onUnmounted(() => clearInterval(interval));
-definePageMeta({ layout: false });
+definePageMeta({
+  layout: false, // halaman ini tanpa layout global
+});
 </script>
