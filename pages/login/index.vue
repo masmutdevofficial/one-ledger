@@ -14,15 +14,15 @@
 
         <form @submit.prevent="login">
           <input
-            type="text"
             v-model="identity"
-            placeholder="Email / Phone Number"
+            type="text"
+            placeholder="Email"
             class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
           />
           <div class="relative mb-3">
             <input
-              :type="showPassword ? 'text' : 'password'"
               v-model="password"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="Password"
               class="w-full border border-gray-300 rounded-md py-2 px-3 pr-10 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
             />

@@ -65,47 +65,47 @@ const menus = [
   {
     title: "Smart Arbitrage",
     link: "/smart-arbitrage",
-    img: "/img/robot-logo.png",
+    img: "/img/smart-arbitrage.png",
   },
   {
     title: "P2P",
     link: "/p2p",
-    img: "/img/business-to-consumer.png",
+    img: "/img/p2p.png",
   },
   {
     title: "Security",
     link: "/security",
-    img: "/img/reset-password.png",
+    img: "/img/security.png",
   },
   {
     title: "Hub Reward",
     link: "/reward",
-    img: "/img/wallet.png",
+    img: "/img/hub-reward.png",
   },
   {
     title: "LaunchPool",
     link: "/launchpool",
-    img: "/img/rocket.png",
+    img: "/img/launchpool.png",
   },
   {
     title: "Megadrop",
     link: "/megadrop",
-    img: "/img/dropshipping.png",
+    img: "/img/megadrop.png",
   },
   {
     title: "Weekly Event",
     link: "/event",
-    img: "/img/calendar.png",
+    img: "/img/weekly-event.png",
   },
   {
     title: "Legal Document",
     link: "/legal",
-    img: "/img/compliant.png",
+    img: "/img/legal.png",
   },
   {
     title: "Verify",
     link: "/verify",
-    img: "/img/social-media.png",
+    img: "/img/verify.png",
   },
   {
     title: "Logout",

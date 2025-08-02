@@ -3,40 +3,21 @@
     <div class="w-full relative max-w-md bg-white min-h-screen flex flex-col">
       <!-- Tombol Login -->
       <div class="absolute top-4 right-6">
-        <NuxtLink to="/login" class="text-sm font-bold text-gray-700">
-          Login
-        </NuxtLink>
+        <NuxtLink to="/login" class="text-sm font-bold text-gray-700"
+          >Login</NuxtLink
+        >
       </div>
       <div class="mx-6 mt-12">
         <h2 class="text-lg font-semibold mb-4">Sign Up</h2>
+
         <!-- Email -->
         <input
           v-model="email"
-          type="text"
+          type="email"
           placeholder="Email"
           class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
-        <!-- Username -->
-        <input
-          v-model="username"
-          type="text"
-          placeholder="Username"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
-        />
-        <!-- HP -->
-        <input
-          v-model="hp"
-          type="text"
-          placeholder="Phone Number"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
-        />
-        <!-- Password -->
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
-        />
+
         <!-- Referral -->
         <button
           type="button"
@@ -59,6 +40,7 @@
           placeholder="Enter Referral Code"
           class="w-full border border-gray-300 rounded-md py-2 px-3 mb-4 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
+
         <!-- Agreement -->
         <div class="mb-2 flex items-center gap-2">
           <input
@@ -88,6 +70,7 @@
             >.
           </label>
         </div>
+
         <button
           type="button"
           :disabled="loading"
@@ -110,11 +93,7 @@ import { useApiAlertStore } from "~/stores/api-alert";
 definePageMeta({ layout: false });
 
 const showReferral = ref(false);
-
 const email = ref("");
-const username = ref("");
-const hp = ref("");
-const password = ref("");
 const referral = ref("");
 const agreePrivacy = ref(false);
 const agreeTerms = ref(false);
@@ -124,17 +103,18 @@ const modal = useApiAlertStore();
 const router = useRouter();
 
 const handleRegister = async () => {
-  if (!email.value || !username.value || !hp.value || !password.value) {
-    modal.open("Failed", "All fields are required.");
+  if (!email.value) {
+    modal.open("Failed", "Email is required.");
     return;
   }
   if (!agreePrivacy.value || !agreeTerms.value) {
     modal.open("Failed", "You must agree to Privacy Policy and Terms.");
     return;
   }
+
   loading.value = true;
   try {
-    const res = await fetch("https://ledger.masmutdev.id/api/register", {
+    const res = await fetch("http://localhost:8000/api/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,25 +122,25 @@ const handleRegister = async () => {
       },
       body: JSON.stringify({
         email: email.value,
-        username: username.value,
-        hp: hp.value,
-        password: password.value,
-        referral: referral.value,
+        referral: referral.value || null,
       }),
     });
+
     const data = await res.json();
+
     if (!res.ok || data.status !== "success") {
-      // Tampilkan pesan error dari server atau error log validasi
       let msg = data.message || "Registration failed.";
       if (data.errors_log) {
         msg += " " + Object.values(data.errors_log).join(" ");
       }
       modal.open("Failed", msg);
-      loading.value = false;
       return;
     }
+
+    // ✅ Simpan user_id ke localStorage
+    localStorage.setItem("idReg", data.user_id);
+
     modal.open("Success", data.message || "Registration successful.");
-    // Redirect otomatis ke login setelah modal (opsional)
     setTimeout(() => {
       modal.close();
       router.push("/verification");

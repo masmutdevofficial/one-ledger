@@ -9,6 +9,7 @@ const publicPages = [
   "/register",
   "/verification",
   "/forgot-password",
+  "/reset-password",
 ];
 const isPublicPage = computed(() => publicPages.includes(route.path));
 
@@ -46,7 +47,7 @@ onMounted(async () => {
         class="bg-[#f0f7fc] w-full max-w-4xl shadow-sm flex items-center px-6 py-4 space-x-8"
       >
         <!-- Logo -->
-        <NuxtLink to="/dashboard" aria-label="Dashboard">
+        <NuxtLink to="/account" aria-label="Account">
           <img
             alt="Logo with four hexagons"
             class="w-8 h-9"
@@ -85,9 +86,6 @@ onMounted(async () => {
           >
             <Icon name="fa6-solid:headset" />
           </NuxtLink>
-          <button aria-label="Help" class="focus:outline-none">
-            <Icon name="tabler:info-circle" size="24" />
-          </button>
         </nav>
       </header>
 

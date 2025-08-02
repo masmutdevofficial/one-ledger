@@ -59,33 +59,9 @@
     </section>
 
     <!-- Section: Traders League and Market Table -->
-    <section
-      class="w-full bg-[#f0f7fc] rounded-2xl p-5 space-y-6 drop-shadow-md"
-    >
+    <section class="w-full bg-[#f0f7fc] rounded-2xl p-5 drop-shadow-md">
       <!-- Top Banner -->
-      <div
-        class="flex flex-row justify-between items-center bg-white rounded-2xl p-5"
-      >
-        <div class="flex flex-col">
-          <div
-            class="text-[10px] text-[#9ca3af] font-normal leading-none tracking-wide uppercase"
-          >
-            TRADERS LEAGUE SEASON 2:
-          </div>
-          <div
-            class="font-semibold text-[14px] mt-1 leading-none text-black tracking-tight"
-          >
-            SHARE $6M IN REWARDS!
-          </div>
-        </div>
-        <img
-          src="/img/fire.png"
-          alt="Golden crown icon with 3D shading"
-          class="w-6 h-6"
-          width="24"
-          height="24"
-        />
-      </div>
+      <SliderDashboard />
 
       <!-- Market Table -->
       <div class="bg-white rounded-2xl p-5 space-y-6">
@@ -116,6 +92,7 @@
             >
               <span>{{ item.name }}</span>
               <img
+                v-if="item.icon"
                 :src="item.icon"
                 :alt="item.name + ' icon'"
                 class="w-3.5 h-3.5"
@@ -142,17 +119,113 @@
         </div>
 
         <!-- View More -->
-        <div
-          class="text-center text-[12px] text-[#9ca3af] font-normal cursor-pointer select-none"
+        <NuxtLink
+          to="/market"
+          class="block text-center text-[12px] text-[#9ca3af] font-normal cursor-pointer select-none hover:underline"
         >
           View more
+        </NuxtLink>
+      </div>
+    </section>
+
+    <section
+      class="w-full bg-[#f0f7fc] rounded-2xl p-5 pt-0 mt-0 drop-shadow-md pb-20 space-y-4"
+    >
+      <div
+        v-for="(news, index) in newsList"
+        :key="index"
+        class="bg-white rounded-2xl p-5 flex flex-col space-y-3 hover:bg-gray-50 transition-colors duration-150"
+      >
+        <!-- Header -->
+        <div class="flex justify-between items-center">
+          <div
+            class="flex items-center space-x-1 text-gray-900 font-semibold text-sm"
+          >
+            <span class="text-[10px] leading-none">•</span>
+            <span>{{ news.date }}</span>
+          </div>
+          <div class="font-extrabold text-sm text-black">News</div>
+        </div>
+
+        <!-- Time -->
+        <div class="text-gray-400 text-xs font-normal select-none">
+          {{ news.time }}
+        </div>
+
+        <!-- Content -->
+        <div class="flex items-start space-x-4">
+          <img
+            :src="news.image"
+            alt="News Image"
+            class="w-24 h-16 object-cover rounded-lg"
+          />
+          <div class="flex-1 space-y-1">
+            <div class="font-extrabold text-black text-sm leading-[1.1]">
+              {{ news.title }}
+            </div>
+            <div class="text-xs text-gray-500">
+              {{ truncate(news.description, 25) }}
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <NuxtLink
+            :to="`/news/${news.slug}`"
+            class="text-[#3ABBA3] text-xs font-semibold hover:underline"
+          >
+            Read more
+          </NuxtLink>
         </div>
       </div>
     </section>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import SliderDashboard from "~/components/dashboard/SliderDashboard.vue";
+
+interface NewsItem {
+  date: string;
+  time: string;
+  title: string;
+  description: string;
+  slug: string;
+  image: string;
+}
+
+const truncate = (text: string, limit: number): string =>
+  text.length > limit ? text.substring(0, limit) + "..." : text;
+
+const newsList: NewsItem[] = [
+  {
+    date: "Jul 03 2025",
+    time: "15:13",
+    title: "U.S. House to Vote on 'One Big Beautiful Bill' Tonight",
+    description:
+      "The U.S. House is expected to vote tonight on a major piece of legislation.",
+    slug: "us-house-to-vote-on-one-big-beautiful-bill-tonight",
+    image: "https://placehold.co/400x200?text=News+1",
+  },
+  {
+    date: "Jul 03 2025",
+    time: "12:45",
+    title: "Bitcoin surges above $110K as traders eye ETF approval",
+    description:
+      "Bitcoin reached new heights amid optimism for a spot ETF approval.",
+    slug: "bitcoin-surges-above-110k-as-traders-eye-etf-approval",
+    image: "https://placehold.co/400x200?text=News+2",
+  },
+  {
+    date: "Jul 03 2025",
+    time: "09:27",
+    title: "Global markets react to Fed rate cut decision",
+    description:
+      "The Federal Reserve's rate cut decision triggered mixed reactions globally.",
+    slug: "global-markets-react-to-fed-rate-cut-decision",
+    image: "https://placehold.co/400x200?text=News+3",
+  },
+];
+
 const marketData = [
   { name: "BNB", price: "660,95", change: "0,93", icon: "/img/fire.png" },
   { name: "BTC", price: "109.164,81", change: "2,16", icon: "/img/fire.png" },
