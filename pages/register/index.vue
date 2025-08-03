@@ -17,7 +17,13 @@
           placeholder="Email"
           class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
         />
-
+        <!-- Password -->
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password (min 3 characters)"
+          class="w-full border border-gray-300 rounded-md py-2 px-3 mb-3 text-sm placeholder-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-400"
+        />
         <!-- Referral -->
         <button
           type="button"
@@ -94,6 +100,7 @@ definePageMeta({ layout: false });
 
 const showReferral = ref(false);
 const email = ref("");
+const password = ref("");
 const referral = ref("");
 const agreePrivacy = ref(false);
 const agreeTerms = ref(false);
@@ -103,6 +110,10 @@ const modal = useApiAlertStore();
 const router = useRouter();
 
 const handleRegister = async () => {
+  if (!password.value || password.value.length < 3) {
+    modal.open("Failed", "Password must be at least 3 characters.");
+    return;
+  }
   if (!email.value) {
     modal.open("Failed", "Email is required.");
     return;
@@ -122,6 +133,7 @@ const handleRegister = async () => {
       },
       body: JSON.stringify({
         email: email.value,
+        password: password.value,
         referral: referral.value || null,
       }),
     });

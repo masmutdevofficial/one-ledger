@@ -14,13 +14,23 @@
       <div
         class="flex items-baseline space-x-1 font-semibold text-3xl text-black mb-1"
       >
-        <span>1,12</span>
+        <span>{{
+          saldo !== null
+            ? saldo.toLocaleString("id-ID", { minimumFractionDigits: 2 })
+            : "..."
+        }}</span>
         <span class="text-base font-normal">USDT</span>
         <Icon name="tabler:caret-down-filled" class="text-base" />
       </div>
 
       <!-- USD Equivalent -->
-      <div class="text-gray-400 text-sm mb-2">≈ $1,12</div>
+      <div class="text-gray-400 text-sm mb-2">
+        ≈ ${{
+          saldo !== null
+            ? saldo.toLocaleString("en-US", { minimumFractionDigits: 2 })
+            : "..."
+        }}
+      </div>
 
       <!-- PNL -->
       <div class="text-xs flex items-center text-black mb-4">
@@ -131,7 +141,19 @@
     <section
       class="w-full bg-[#f0f7fc] rounded-2xl p-5 pt-0 mt-0 drop-shadow-md pb-20 space-y-4"
     >
+      <div v-if="loading" class="text-center text-sm text-gray-500 py-10">
+        Loading...
+      </div>
+
       <div
+        v-else-if="newsList.length === 0"
+        class="text-center text-sm text-gray-500 py-10"
+      >
+        No Data Available
+      </div>
+
+      <div
+        v-else
         v-for="(news, index) in newsList"
         :key="index"
         class="bg-white rounded-2xl p-5 flex flex-col space-y-3 hover:bg-gray-50 transition-colors duration-150"
@@ -155,7 +177,7 @@
         <!-- Content -->
         <div class="flex items-start space-x-4">
           <img
-            :src="news.image"
+            :src="`http://127.0.0.1:8000${news.image}`"
             alt="News Image"
             class="w-24 h-16 object-cover rounded-lg"
           />
@@ -164,10 +186,11 @@
               {{ news.title }}
             </div>
             <div class="text-xs text-gray-500">
-              {{ truncate(news.description, 25) }}
+              {{ truncate(news.content, 25) }}
             </div>
           </div>
         </div>
+
         <div class="flex justify-end">
           <NuxtLink
             :to="`/news/${news.slug}`"
@@ -183,48 +206,113 @@
 
 <script setup lang="ts">
 import SliderDashboard from "~/components/dashboard/SliderDashboard.vue";
+import { ref, onMounted } from "vue";
+import { useApiAlertStore } from "~/stores/api-alert";
 
-interface NewsItem {
+interface SaldoResponse {
+  status: string;
+  saldo: number;
+  komisi: number;
+}
+
+const saldo = ref<number | null>(null);
+const komisi = ref<number | null>(null);
+
+onMounted(async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://127.0.0.1:8000/api/saldo", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    });
+
+    const data: SaldoResponse = await res.json();
+
+    if (res.ok && data.status === "success") {
+      saldo.value = data.saldo;
+      komisi.value = data.komisi;
+    } else {
+      console.error("Gagal ambil saldo:", data);
+    }
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+});
+
+interface ApiNewsItem {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  image: string;
+  published_at: string;
+}
+
+interface NewsItem extends ApiNewsItem {
   date: string;
   time: string;
-  title: string;
-  description: string;
-  slug: string;
-  image: string;
 }
+
+const newsList = ref<NewsItem[]>([]);
+const loading = ref(true);
+const modal = useApiAlertStore();
 
 const truncate = (text: string, limit: number): string =>
   text.length > limit ? text.substring(0, limit) + "..." : text;
 
-const newsList: NewsItem[] = [
-  {
-    date: "Jul 03 2025",
-    time: "15:13",
-    title: "U.S. House to Vote on 'One Big Beautiful Bill' Tonight",
-    description:
-      "The U.S. House is expected to vote tonight on a major piece of legislation.",
-    slug: "us-house-to-vote-on-one-big-beautiful-bill-tonight",
-    image: "https://placehold.co/400x200?text=News+1",
-  },
-  {
-    date: "Jul 03 2025",
-    time: "12:45",
-    title: "Bitcoin surges above $110K as traders eye ETF approval",
-    description:
-      "Bitcoin reached new heights amid optimism for a spot ETF approval.",
-    slug: "bitcoin-surges-above-110k-as-traders-eye-etf-approval",
-    image: "https://placehold.co/400x200?text=News+2",
-  },
-  {
-    date: "Jul 03 2025",
-    time: "09:27",
-    title: "Global markets react to Fed rate cut decision",
-    description:
-      "The Federal Reserve's rate cut decision triggered mixed reactions globally.",
-    slug: "global-markets-react-to-fed-rate-cut-decision",
-    image: "https://placehold.co/400x200?text=News+3",
-  },
-];
+onMounted(async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    modal.open("Unauthorized", "Token tidak ditemukan.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:8000/api/news", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      modal.open("Error", data.message || "Gagal memuat berita.");
+      return;
+    }
+
+    if (data.status === "success") {
+      newsList.value = (data.data as ApiNewsItem[]).map((item) => {
+        const published = new Date(item.published_at);
+        const date = published.toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+        });
+        const time = published.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+
+        return {
+          ...item,
+          date,
+          time,
+        };
+      });
+    }
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : JSON.stringify(e);
+    modal.open("Error", `Gagal terhubung ke server. ${errorMessage}`);
+  } finally {
+    loading.value = false;
+  }
+});
 
 const marketData = [
   { name: "BNB", price: "660,95", change: "0,93", icon: "/img/fire.png" },
